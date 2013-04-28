@@ -22,6 +22,9 @@ Load Simulation
 3. Now you have to select the correct layout” mu0-2.layout.xml”. 
 4. Setup. 
 
+Usage
+----------------------
+
 ### The two buttons (Micro Step / Instrucation)
 
 #### Micro Step
