@@ -22,10 +22,11 @@ Load Simulation
 3. Now you have to select the correct layout” mu0-2.layout.xml”. 
 4. Setup. 
 
-Micro Step
-----------------------
+### The two buttons (Micro Step / Instrucation)
+
+#### Micro Step
 Performes micro step.
-Instruction 
+#### Instruction 
 Performes instruction, if an instructon is currently executed it will 
 be finished. 
 
