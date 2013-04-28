@@ -6,3 +6,6 @@ architectures. It visualizes simple architectures based on primitive components 
 
 Features
 ======================
+* Create your own architecture like the theoretical MU0 (MU0-2,...)
+* Create your own assabler instructions for your build architecture by setting register input or output on the falling or recing edge
+* Write your own programms for your own architecture 
