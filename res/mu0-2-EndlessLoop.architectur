@@ -1,0 +1,315 @@
+<machine architecture="16">
+	<components>
+		<alu name="alu1"/>
+		<register name="ACC"/>
+		<register name="SP"/>
+		<register name="PC"/>
+		<register name="DIN"/>
+		<register name="DOUT"/>
+		<register name="IR"/>
+		<andgate name="andgate1" mask="0FFF"/>
+		<multiplexer name="mux1"/>
+		<ram name="ram1">
+		
+		
+		<!-- Progamm TEST JGE S und JNE S Programmname: Deathloop -->
+			<value>300F</value> <!-- ACC = ACC - 1 -->
+			<value>D000</value> 
+			<value>5000</value> <!-- if greater 0  jump to 0-->
+			<value>200E</value> <!-- ACC = ACC + 2 -->
+			<value>6000</value> <!-- if != 0 jump to 0 -->
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0000</value>
+			<value>0002</value>
+			<value>0001</value>
+		</ram>
+		<buses>
+			<bus name="bus1">
+				<connectto> 
+					<register name="DOUT" type="out"/>
+					<ram name="ram1" type="data"/>
+					<register name="DIN" type="in"/>
+					<register name="IR" type="in"/>
+				</connectto>
+			</bus>
+			
+			<bus name="bus2_0">
+				<connectto> 
+					<register name="IR" type="out"/>
+					<andgate name="andgate1" type="in"/>
+				</connectto>
+			</bus>
+			
+			<bus name="bus2">
+				<connectto> 
+					<register name="DIN" type="out"/>
+					<andgate name="andgate1" type="out"/> 
+					<multiplexer name="mux1" channel="1"/>
+					<alu name="alu1" bus="b"/>
+				</connectto>	
+			</bus>	
+			<bus name="bus3">
+				<connectto> 
+					<multiplexer name="mux1" channel="0"/>
+					<register name="PC" type="out"/>
+					<register name="DOUT" type="in"/>
+					<register name="SP" type="out"/>
+					<register name="ACC" type="out"/>
+					<alu name="alu1" bus="a"/>
+				</connectto>
+			</bus>		
+			<bus name="bus4">
+				<connectto> 
+					<register name="PC" type="in"/>
+					<alu name="alu1" bus="out"/>
+					<register name="SP" type="in"/>
+					<register name="ACC" type="in"/>
+				</connectto>
+			</bus>			
+			<bus name="bus5">
+				<connectto>
+					<multiplexer name="mux1" channel="out"/>
+ 					<ram name="ram1" type="adress"/>
+				</connectto>
+			</bus>
+		</buses>
+	</components>
+	<instructions sourceregister="IR" startfrombit="15" length="4"><!-- startbit und length sind binary angaben -->
+<!-- fetch wird bei jedem Befehl zuerst ausgeführt -->
+		<fetch> 
+			<step>
+				<multiplexer name="mux1" channel="0"/>
+				<register name="PC" type="out" />
+				<alu name="alu1" instruction="AplusOne"/>
+				<register name="PC" type="in" />
+				<ram name="ram1" rnw="false" cs="true"/> 
+				<register name="IR" type="in" />
+			</step>
+		</fetch>
+<!-- LDA_S lädt den Wert der unter der Adresse S => IR(0..11) abgelegt ist in den ACC -->
+		<instruction name="LDA_S" opcode="0000"> 
+			<step>
+				<multiplexer name="mux1" channel="1"/>
+				<register name="IR" type="out"/>	<!-- dürfte nur Adressteil von IR(0..11) genutzt werden--> 
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+			</step>
+			<step>
+				<register name="DIN" type="out"/>
+				<alu name="alu1" instruction="B"/>	<!-- gleichB wird benötigt-->
+				<register name="ACC" type="in"/>
+			</step>
+		</instruction>
+<!-- STA_S speichert den Inhalt von ACC unter der Adresse S => IR(0..11) -->
+		<instruction name="STA_S" opcode="0001"> 
+			<step>
+				<register name="ACC" type="out"/>
+				<register name="DOUT" type="in"/>
+			</step>
+			<step>
+				<multiplexer name="mux1" channel="1"/>
+				<register name="DOUT" type="out"/>
+				<register name="IR" type="out"/>	<!-- dürfte nur Adressteil von IR(0..11) genutzt werden--> 
+ 				<ram name="ram1" rnw="true" cs="true"/> 
+			</step>
+		</instruction>
+<!-- ADD_S addiert den Wert der unter der Adresse S => IR(0..11) abgelegt ist zum Inhalt des ACC und übernimmt das Ergebniss in den ACC -->
+		<instruction name="ADD_S" opcode="0010"> 
+			<step>
+				<multiplexer name="mux1" channel="1"/>
+				<register name="IR" type="out"/>	<!-- dürfte nur Adressteil von IR(0..11) genutzt werden--> 
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+			</step>
+			<step>
+				<register name="ACC" type="out"/>
+				<register name="DIN" type="out"/>
+				<alu name="alu1" instruction="AplusB"/>	
+				<register name="ACC" type="in"/>
+			</step>
+		</instruction>
+<!-- SUB_S subtrahiert den Wert der unter der Adresse S => IR(0..11) abgelegt ist vom Inhalt des ACC und übernimmt das Ergebniss in den ACC -->
+		<instruction name="SUB_S" opcode="0011"> 
+			<step>
+				<multiplexer name="mux1" channel="1"/>
+				<register name="IR" type="out"/>	<!-- dürfte nur Adressteil von IR(0..11) genutzt werden--> 
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+			</step>
+			<step>
+				<register name="ACC" type="out"/>
+				<register name="DIN" type="out"/>
+				<alu name="alu1" instruction="AminusB"/>	<!-- AminusB wird benötigt-->
+				<register name="ACC" type="in"/>
+			</step>
+		</instruction>
+<!-- übernimmt den Wert S => IR(0..11) in den Programmcounter PC -->
+		<instruction name="JMP_S" opcode="0100"> 
+			<step>
+				<register name="IR" type="out"/>	
+				<alu name="alu1" instruction="B"/>
+				<register name="PC" type="in"/>
+			</step>
+		</instruction>
+		<instruction name="JGE_S" opcode="0101"> 
+			<condition>
+				<register name="ACC">
+					<biggerOrEqual2k value="0"/>
+				</register>
+			</condition>
+			<step>
+				<register name="IR" type="out"/>	
+				<alu name="alu1" instruction="B"/>
+				<register name="PC" type="in"/>
+			</step>
+		</instruction>
+		<instruction name="JNE_S" opcode="0110">
+			<condition>
+				<register name="ACC">
+					<equalsNot value="0"/>
+				</register>
+			</condition>
+			<step>
+				<register name="IR" type="out"/>	
+				<alu name="alu1" instruction="B"/>
+				<register name="PC" type="in"/>
+			</step>
+		</instruction>
+		
+<!-- Dekremeniert den Inahlt des SP und speichert den Inhalt des PC auf der neuen Adresse aus SP -->
+<!-- übernimmt die Adresse S => IP(0..11) in den PC -->
+		<instruction name="CALL_S" opcode="1000"> 
+			<step>
+				<register name="SP" type="out"/>	
+				<alu name="alu1" instruction="AminusOne"/>	<!-- 0 weniger 1 geht wohl net?? -->
+				<register name="SP" type="in"/>
+			</step>
+			<step>
+				<register name="PC" type="out"/>
+				<register name="DOUT" type="in"/>
+			</step>
+			<step>
+				<register name="SP" type="out"/>	
+				<multiplexer name="mux1" channel="0"/>	
+				<register name="DOUT" type="out"/>
+				<ram name="ram1" rnw="true" cs="true"/>
+			</step>
+			<step>
+				<register name="IR" type="out"/>	<!-- dürfte nur Adressteil von IR(0..11) genutzt werden--> 
+				<alu name="alu1" instruction="B"/>
+				<register name="PC" type="in"/>
+			</step>
+	
+		</instruction>
+<!-- Übernimmt den Wert aus der Speichrstelle auf die SP zeigt nach PC -->
+<!-- und SP = SP + 1 -->
+		<instruction name="RETURN" opcode="1001"> 
+			<step>
+				<register name="SP" type="out"/>
+				<alu name="alu1" instruction="AplusOne"/>
+				<register name="SP" type="in"/>	
+				<multiplexer name="mux1" channel="0"/>	
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+			</step>
+			<step>
+				<register name="DIN" type="out"/>	
+				<alu name="alu1" instruction="B"/>	<!-- gleichB wird benötigt-->
+				<register name="PC" type="in"/>
+			</step>
+		</instruction>
+<!-- Dekrementiert den SP und speichert den Inahlt von ACC unter der Adresse vom SP -->
+		<instruction name="PUSH" opcode="1010"> 
+			<step>
+				<register name="SP" type="out"/>
+				<alu name="alu1" instruction="AminusOne"/>
+				<register name="SP" type="in"/>	
+			</step>
+			<step>
+				<register name="ACC" type="out"/>	
+				<register name="DOUT" type="in"/>
+			</step>
+			<step>
+				<register name="SP" type="out"/>	
+				<multiplexer name="mux1" channel="0"/>	
+				<register name="DOUT" type="out"/>
+				<ram name="ram1" rnw="true" cs="true"/>
+			</step>
+		</instruction>
+<!-- Holt den Inhalt auf den die Adresse in SP zeigt nach ACC und erhöht den SP um 1 -->
+		<instruction name="POP" opcode="1011"> 
+			<step>
+				<register name="SP" type="out"/>
+				<multiplexer name="mux1" channel="0"/>	
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+				<alu name="alu1" instruction="AplusOne"/>
+				<register name="SP" type="in"/>
+			</step>
+			<step>
+				<register name="DIN" type="out"/>
+				<alu name="alu1" instruction="B"/>
+				<register name="ACC" type="in"/>
+			</step>
+		</instruction>
+<!-- Der Befehl LDR S lädt den Akkumulator  mit dem Inhalt der Adresse, auf die die Variable S zeigt -->
+		<instruction name="LDR_S" opcode="1100"> 
+			<step>
+				<register name="IR" type="out"/>				
+				<multiplexer name="mux1" channel="1"/>
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+			</step>
+			<step>
+				<register name="DIN" type="out"/>
+				<multiplexer name="mux1" channel="1"/>
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+			</step>
+			<step>
+				<register name="DIN" type="out"/>
+				<alu name="alu1" instruction="B"/>
+				<register name="ACC" type="in"/>
+			</step>
+		</instruction>
+<!-- Der Befehl STR S speichert den Inhalt des Akkumulator unter der Adresse, auf die die Variable S zeigt -->
+		<instruction name="STR_S" opcode="1101"> 
+			<step>
+				<register name="IR" type="out"/>				
+				<multiplexer name="mux1" channel="1"/>
+				<ram name="ram1" rnw="false" cs="true"/>
+				<register name="DIN" type="in"/>
+				<register name="ACC" type="out"/>
+				<register name="DOUT" type="in"/>
+			</step>
+			<step>
+				<register name="DIN" type="out"/>
+				<multiplexer name="mux1" channel="1"/>
+				<register name ="DOUT" type="out"/>
+				<ram name="ram1" rnw="true" cs="true"/>
+			</step>
+		</instruction>
+		<instruction name="MOV_PC" opcode="1110"> 
+			<step>
+				<register name="ACC" type="out"/>
+				<alu name="alu1" instruction="A"/>
+				<register name="PC" type="in"/>
+			</step>
+		</instruction>
+		<instruction name="MOV_SP" opcode="1111"> 
+			<step>
+				<register name="ACC" type="out"/>
+				<alu name="alu1" instruction="A"/>
+				<register name="SP" type="in"/>
+			</step>
+		</instruction>
+	</instructions>
+</machine>

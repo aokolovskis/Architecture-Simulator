@@ -3,3 +3,6 @@
 *~
 *.swp
 build/*
+nbproject/*
+res/img/*
+*_project_bundle.zip

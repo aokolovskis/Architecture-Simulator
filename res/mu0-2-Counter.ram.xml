@@ -1,0 +1,13 @@
+<ram>
+<!-- Progamm Programmname: Counter -->
+	<value>00FF</value> <!--(Adresse 0) Lade Variable 1 in Acc --> 
+	<value>2100</value> <!--(Adresse 1) Lade Variable 2 und Addiere Variable 2 in Acc -->
+	<value>10FF</value> <!--(Adresse 2) Speichere das Ergebinnis in Variable 1 -->
+	<value>4000</value> <!--(Adresse 3) Fang von vorne an Sprung zu Adresse 0-->
+	<value>0000</value> 
+	<value>0000</value>
+	<value>0000</value>
+	<value>0000</value>
+	<value address="FF">0000</value> <!-- (Adresse FF) Variable 1 -->
+	<value>0001</value>				 <!-- (Adresse 100) Variable 2 -->
+</ram>

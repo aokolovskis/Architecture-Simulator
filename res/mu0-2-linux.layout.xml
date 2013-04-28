@@ -1,0 +1,242 @@
+<layout>
+	<virtuallines>
+		<virtualline name ="v1" orientation="horizontal" position="170"/>
+		<virtualline name ="v2" orientation="horizontal" position="70"/>
+		<virtualline name ="bus_dout_ram_top" orientation="horizontal" position="31"/>
+		<virtualline name ="bus_acc_pc_sp_top" orientation="horizontal" position="135"/>
+		<virtualline name ="bus_acc_pc_sp_bottom" orientation="horizontal" position="220"/>
+		<virtualline name ="bus_acc_left" orientation="vertical" position="10"/>
+		<virtualline name ="bus_acc_middle" orientation="vertical" position="91"/>
+		<virtualline name ="bus_alu_middle" orientation="vertical" position="210"/>
+		<virtualline name ="bus_pc_middle" orientation="vertical" position="257"/>
+	
+		<virtualline name ="bus_sp_middle" orientation="vertical" position="417"/>
+		<virtualline name ="bus_ir_middle" orientation="vertical" position="615"/>
+		<virtualline name ="bus_din_middle" orientation="vertical" position="780"/>
+		<virtualline name ="bus_alu_ir_din" orientation="horizontal" position="330"/>
+		<virtualline name ="mux_input_1" orientation="vertical" position="502"/>
+		<virtualline name ="mux_input_2" orientation="vertical" position="529"/>	
+		<virtualline name ="alu_input_a" orientation="vertical" position="165"/>
+		<virtualline name ="alu_input_b" orientation="vertical" position="255"/>
+		
+	</virtuallines>
+	<anchorfor>
+		<register name="DOUT">
+			<x><number value="171"/></x>
+		 	<y><virtualline name="v2"/></y>
+		</register>
+		<register name="IR" orientation="south">
+		 	<x><number value="540"/></x>
+		 	<y><virtualline name="v1"/></y>
+		 </register>
+		<register name="DIN" orientation="south">
+		 	<x><number value="700"/></x>
+		 	<y><virtualline name="v1"/></y>
+		 </register>
+		<register name="PC">
+			<x><number value="180"/></x>
+		 	<y><virtualline name="v1"/></y>
+		</register>
+		<register name="SP">
+			<x><number value="340"/></x>
+		 	<y><virtualline name="v1"/></y>
+		</register>
+		<register name="ACC">
+			<x><number value="10"/></x>
+		 	<y><virtualline name="v1"/></y>
+		</register>
+		<multiplexer name="mux1" >
+			<x><number value="475"/></x>
+		 	<y><virtualline name="v2"/></y>
+		</multiplexer>
+		<alu name="alu1" >
+			<point x="150" y="255"/>
+		</alu>
+		<ram name="ram1" >
+			<point x="700" y="0"/>
+		</ram>
+		<andgate name="andgate1" orientation="south" >
+			<x><number value="535"/></x>
+		 	<y><virtualline name="bus_acc_pc_sp_bottom"/></y>
+		</andgate>
+	</anchorfor>
+	<buspaths>
+		<buspath  for="bus5">
+			<start from="mux1"/>
+			<stopover from="mux1" to="ram1">
+				<stopoverhere>
+					<point x="515" y="50"/>
+				</stopoverhere>
+				<stopoverhere>
+					<point x="650" y="50"/>
+				</stopoverhere>
+				<stopoverhere>
+					<point x="650" y="93"/>
+				</stopoverhere>
+			</stopover>	
+		</buspath>
+		<buspath  for="bus4">
+			<start from="alu1"/>
+			<stopover from="alu1" to="SP">
+				<stopoverhere>
+					<x><virtualline name ="bus_alu_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_bottom"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_sp_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_bottom"/></y>
+				</stopoverhere>
+			</stopover>	
+			<stopover from="SP" to="PC">
+				<stopoverhere>
+					<x><virtualline name ="bus_sp_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_bottom"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_pc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_bottom"/></y>
+				</stopoverhere>
+			</stopover>				
+			<stopover from="PC" to="ACC">
+				<stopoverhere>
+					<x><virtualline name ="bus_pc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_bottom"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_acc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_bottom"/></y>
+				</stopoverhere>
+			</stopover>
+			
+			
+		</buspath>
+		
+		<buspath  for="bus3">
+			<start from="mux1"/>
+			<stopover from="mux1" to="SP">
+				<stopoverhere>
+					<x><virtualline name ="mux_input_1"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_sp_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+			</stopover>	
+			<stopover from="SP" to="PC">
+				<stopoverhere>
+					<x><virtualline name ="bus_sp_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_pc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+			</stopover>	
+			<stopover from="PC" to="DOUT">
+			</stopover>	
+			<stopover from="DOUT" to="ACC">
+				<stopoverhere>
+					<x><virtualline name ="bus_pc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_acc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+			</stopover>
+			
+			<stopover from="ACC" to="alu1">
+				<stopoverhere>
+					<x><virtualline name ="bus_acc_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><number value="2"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+			
+				<stopoverhere>
+					<x><number value="2"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+				
+				<stopoverhere>
+					<x><virtualline name ="alu_input_a"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+			</stopover>	
+		</buspath>
+		
+		
+		<buspath  for="bus2">
+			<start from="DIN"/>
+			<stopover from="DIN" to="andgate1">
+				<stopoverhere>
+					<x><virtualline name ="bus_din_middle"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_ir_middle"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+			</stopover>	
+			<stopover from="andgate1" to="mux1">
+				<stopoverhere>
+					<x><virtualline name ="bus_ir_middle"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="mux_input_2"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+			</stopover>	
+			<stopover from="mux1" to="alu1">
+				<stopoverhere>
+					<x><virtualline name ="mux_input_2"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="alu_input_b"/></x>
+					<y><virtualline name ="bus_alu_ir_din"/></y>
+				</stopoverhere>
+			</stopover>	
+		</buspath>
+		
+		<buspath  for="bus2_0">
+			<start from="IR"/>
+			<stopover from="IR" to="andgate1">
+				<stopoverhere>
+					<x><virtualline name ="bus_ir_middle"/></x>
+					<y><number value="210"/></y>
+				</stopoverhere>
+			</stopover>
+		</buspath>
+		
+		<buspath  for="bus1">
+		   <start from="DOUT"/>
+		   <stopover from="DOUT" to="ram1">
+				<stopoverhere>
+					<x><virtualline name ="bus_pc_middle"/></x>
+					<y><virtualline name ="bus_dout_ram_top"/></y>
+				</stopoverhere>
+			</stopover>
+		   <stopover from="ram1" to="IR">
+				<stopoverhere>
+					<x><virtualline name ="bus_ir_middle"/></x>
+					<y><virtualline name ="bus_dout_ram_top"/></y>
+				</stopoverhere>
+			</stopover>	
+			 <stopover from="IR" to="DIN">
+				<stopoverhere>
+					<x><virtualline name ="bus_ir_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+				<stopoverhere>
+					<x><virtualline name ="bus_din_middle"/></x>
+					<y><virtualline name ="bus_acc_pc_sp_top"/></y>
+				</stopoverhere>
+			</stopover>	
+		</buspath>	
+	</buspaths>
+</layout>
