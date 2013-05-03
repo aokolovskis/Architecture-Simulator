@@ -1,0 +1,8 @@
+# Can ignore specific files
+.DS_Store
+*~
+*.swp
+build/*
+nbproject/*
+res/img/*
+*_project_bundle.zip
