@@ -21,8 +21,8 @@
                         public static final String author="Aleksejs Okolovskis";
 			public static final String email="oko@aloko.de";
                         public static final String home="aloko.de";
-			public static final String timeStamp="Sun, 28-April-2013 12:39:27 CEST";
-                        public static final String build="77";
+			public static final String timeStamp="Mon, 6-May-2013 22:47:28 CEST";
+                        public static final String build="83";
                         public static final String software_version = "0.9";
                         
 		}

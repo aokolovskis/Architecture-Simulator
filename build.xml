@@ -141,15 +141,15 @@
             <zipfileset dir="${basedir}/res/" includes="mu0-2.architecture.xml" fullpath="res/mu0-2.architecture.xml"/>
             <zipfileset dir="${basedir}/res/" includes="mu0-2.layout.xml" fullpath="res/mu0-2.layout.xml"/>
             <zipfileset dir="${basedir}/res/font" prefix="res/font"/>
-            <zipfileset dir="${basedir}/res/doc/use" />
-            <zipfileset dir="${basedir}/res/doc/configure" />
+<!--            <zipfileset dir="${basedir}/res/doc/use" />
+            <zipfileset dir="${basedir}/res/doc/configure" /> -->
         </zip>
         
         <!-- Create a Zip folder of the project -->
-        <delete dir="${basedir}/merge"/>
+   <!--     <delete dir="${basedir}/merge"/>
         <delete file="${basedir}/${application.title}_project_bundle.zip"/>
         <zip destfile="${basedir}/${application.title}_project_bundle.zip" basedir="${basedir}"/>
-        
+    -->    
     </target>
 	
 	
